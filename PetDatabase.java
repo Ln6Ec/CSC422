@@ -144,10 +144,10 @@ public class PetDatabase {
                     System.out.println("Work in progress!");
                     break;
                 case 5:
-                    System.out.println("Work in progress!");
+                    searchPetsByName();
                     break;
                 case 6:
-                    System.out.println("Work in progress!");
+                    searchPetsByAge();
                     break;
                 case 7:
                     System.out.println("\nGoodbye!");
@@ -216,6 +216,54 @@ public class PetDatabase {
 
             petCount++; // Increase petCount number
         }
+        input.close();
+    }
+
+    /** searchPetsByName: user can enter a name and search the database for pets with that name */
+    private static void searchPetsByName() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter a name to search: ");
+        String name = input.nextLine();
+        int nameCount = 0;
+
+        printTableHeader();
+        for (int r = 0; r < petCount; r++) {
+            if (name.equalsIgnoreCase(pet[r][0])) {
+                System.out.print("| "+r+" |");
+                for (int c = 0; c < 2; c++) {
+                    System.out.print(" " + pet[r][c] + " | ");
+                }
+                nameCount++;
+                System.out.println("");
+            }
+            
+        }
+        System.out.println("+----------------------+");
+        System.out.println(nameCount + " rows in set.");
+        input.close();
+    }
+
+    /** searchPetsByAge: user can enter an age and search the database for pets with that age */
+    private static void searchPetsByAge() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter a age to search: ");
+        String age = input.nextLine();
+        int nameCount = 0;
+
+        printTableHeader();
+        for (int r = 0; r < petCount; r++) {
+            if (age.equals(pet[r][1])) {
+                System.out.print("| "+r+" |");
+                for (int c = 0; c < 2; c++) {
+                    System.out.print(" " + pet[r][c] + " | ");
+                }
+                nameCount++;
+                System.out.println("");
+            }
+            
+        }
+        System.out.println("+----------------------+");
+        System.out.println(nameCount + " rows in set.");
         input.close();
     }
 
