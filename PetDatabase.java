@@ -138,10 +138,10 @@ public class PetDatabase {
                     addPets();
                     break;
                 case 3:
-                    System.out.println("Work in progress!");
+                    updatePet();
                     break;
                 case 4:
-                    System.out.println("Work in progress!");
+                    removePet();
                     break;
                 case 5:
                     searchPetsByName();
@@ -215,6 +215,46 @@ public class PetDatabase {
             j--; // Reset column number for next pet
 
             petCount++; // Increase petCount number
+        }
+        input.close();
+    }
+
+    /** updatePet: Allows user to chose a pet from the database and update name and/or age */
+    private static void updatePet() {
+        Scanner input = new Scanner (System.in);
+
+        printTableHeader();
+        printTableRow();
+        printTableFooter();
+
+        System.out.print("\nEnter the pet ID you wish to update: ");
+        int petID = input.nextInt();
+        System.out.print("Enter new name and new age: ");
+        String newName = input.nextLine();
+        String newAge = input.nextLine();
+
+        System.out.println(pet[petID][0] + " " + pet[petID][1] + " changed to " + newName + " " + newAge);
+        pet[petID][0] = newName;
+        pet[petID][1] = newAge;
+        input.close();
+    }
+
+    /** removePet: allows  user to chose a pet from the database and remove it */
+    private static void removePet() {
+        Scanner input = new Scanner(System.in);
+        printTableHeader();
+        printTableRow();
+        printTableFooter();
+
+        System.out.print("Enter the pet ID to remove: ");
+        int id = input.nextInt();
+
+        System.out.println(pet[id][0] +" " + pet[id][1] + " is removed.");
+        for (int r = 0; r < petCount; r++) {
+            if (id == r)
+            for (int c = 0; c < 2; c++) {
+                pet[r][c] = null;
+            }
         }
         input.close();
     }
