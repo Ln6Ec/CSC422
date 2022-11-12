@@ -1,6 +1,6 @@
 /**
  * CSC422 Software Engineering
- * Week 1 Assignment 1
+ * Week 2 Assignment 2 Part 2
  * Nathaniel Turner
 */
 
@@ -83,6 +83,10 @@
 */
 
 import java.util.Scanner;
+import java.io.File; // Import the File class
+import java.io.FileNotFoundException; // Import error handling
+import java.io.FileWriter; // Import the FileWriter class so we can write to a file
+import java.io.IOException; // Import IOException class to handle errors
 
 class Pet {
     private String name;
@@ -120,9 +124,9 @@ public class PetDatabase {
     public static void main(String[] args) {
         boolean cont = true;
         Scanner s = new Scanner (System.in);
+        readDatabaseFile(); // Reads all of the lines from the text file and enters them into pet array
 
         System.out.println("Pet Database Program");
-
 
         while (cont == true) {
             getUserChoice();
@@ -150,12 +154,68 @@ public class PetDatabase {
                     searchPetsByAge();
                     break;
                 case 7:
+                    writeDatabaseFile(); //Writes changes to file before exiting program
+                    System.out.println("Database saved to PetDatabase.txt");
                     System.out.println("\nGoodbye!");
+                    
                     cont = false;
                     break;
             }
         }
         s.close();
+    }
+
+    /** Read the PetDatabase.txt file and enter every line as a pet name and age */
+    private static void readDatabaseFile() {
+        try {
+            File petDbFile = new File("PetDatabase.txt");
+            Scanner readFile = new Scanner(petDbFile);
+            String petName;
+            String petAge;
+
+            while (readFile.hasNextLine()) {
+                String data = readFile.nextLine().trim();
+                petName = data.substring(0, data.indexOf(" "));
+                petAge = data.substring(data.indexOf(" ")+1);
+
+                pet[i][j] = petName;
+                j++;
+                pet[i][j] = petAge;
+
+                i++;
+                j--;
+                petCount++;
+            }
+            readFile.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not found");
+            e.printStackTrace();
+        }
+        
+    }
+    
+    /** Writes Pet array into a file before program closes */
+    private static void writeDatabaseFile() {
+        try {
+            FileWriter writePets = new FileWriter("PetDatabase.txt");
+
+            String petName = "";
+            String petAge = "";
+            int j = 0;
+
+            for (int i = 0; petCount > 0; i++) {
+                pet[i][j]= petName;
+                pet[i][j+1]= petAge;
+
+                writePets.write(petName + petAge);
+                j++;
+            }
+            
+            writePets.close();
+        } catch (IOException e) {
+            System.out.println("Error: Cannot write to file.");
+            e.printStackTrace();
+        }
     }
 
     /** getUserChoice: Code that provides user with main menu and records their choice */
