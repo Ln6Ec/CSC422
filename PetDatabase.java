@@ -4,83 +4,23 @@
  * Nathaniel Turner
 */
 
-/** EXPLANATION OF REQUIREMENTS:
-* This assignment will give you practice of using version control such as git to manage changes of your code
-* and to give you experience of incremental development.
-* 
-* For the purpose of this assignment, you will create a basic database program for managing information (name and age) about pets.
-* The database allows the user to add pet information to the database, remove information, update pet information,
-* and search for pets by name or by age.
-* You can assume the user only inputs pet names consisting of a single word.
-* Error handling is optioal.
-* 
-* You will build this program incrementally. 
-* For each increment, you will create a release that the user can download and run.
-* You will use git and GitHub to track the changes and to create releases.
-* 
-* *THE PROGRAM*
-* You will create a pet database program with the following operations incrementally as described in the Milestones section.
-* You are not requried to save the pet data into a file.
-* You must use appropriate design and make use of Object-Oriented Design.
-* See Milestones.
-*  Add pets:
-*     >Let the user add as many pets as they want.
-*      A pet is entered as a single line consisting of a name and an integer which represents the age of the pet.
-*      The user types "done" to end reading.
-*  Show pets:
-*     >Prints a table of all pets in the database.
-*      See below or the for the formatting of the table.
-*  Update pets:
-*     >Shows the user a table of all the pets and reads the pet ID that the user wants to update.
-*      ID is the array index of the object.
-*      Once the user has selected a pet by typing an ID, it asks the user to enter the new name and new age.
-*      It then updates the actual object.
-*  Search pets by name or age
-*     >Prompts the user for a name and then displays a table showing all pets matching the name.
-*      The name is case insensitive.
-*      For example, "boomer" will show "Boomer"
-*     >Prompts the user for an age and shows a table consisting of pets with that age.
-*  Remove a pet
-*     >Prompts the user for the index of the pet to delete
-* 
-* *TABLE FORMATTING*
-* Your program will display the results for view all pets, search pet by name and search pet by age using a table as shown below.
-* You will need to use System.out.printf() to format the table.
-* Below is a sample table with annotations as to which part is the header, rows, and footer.
-* A row represents a single record about a pet. The ID is the index in the array the object is located.
-* A table consists of zero or more rows. You may use 3 characters for ID, 10 characters for NAME, and 4 characters for AGE.
-* 
-* +----------------------+ \
-* | ID | NAME      | AGE |  } header
-* +----------------------+ /
-* |  0 | Kitty     |   8 | \
-* |  1 | Bruno     |   7 | |
-* |  2 | Boomer    |   8 |  } rows
-* |  3 | Boomer    |   3 | |
-* |  4 | Fiesty    |   3 | /
-* +----------------------+ \
-* 5 rows in set.            } footer
-* 
-* *MILESTONES*
-* You will create three releases with the functionality described below:
-* Release 1: Your program should allow adding and displaying of pets.
-* Release 2: Your program should allow searching of pets.
-* Release 3: Your program should allow for updating and removing pets.
-* 
-* *SUBMISSION*
-* Copy the URL for your repository and paste it in the document for Assignment 1 part 1.
-* You should have three releases.
-* 
-* *GRADING*
-* Your grade will be based on the completion of each release and the quality of your design and code.
-* 
-*      Grading Rubric
-*      Item            Weight
-*      Release 1       25%
-*      Release 2       25%
-*      Release 3       25%
-*      Quality         25%
-*/
+/** EXPLENATION OF REQUIREMENTS
+ * This assignment will give you practice on creating GitHub issues, resolving issues and using GitHub project for Agile development.
+ * 
+ * You will continue working on the previous assignment except you will add the following features.
+ * You should start with the repository for the previous assignment.
+ * The program will load the pet data file from a text file when it starts and save pet data to the file when the user quits the program.
+ * 
+ * The program will also handle errors.
+ * >>The pet database supports only 5 entries
+ * >>The valid input for age should be between 1 and 20. None of our pets live more than 20 years.
+ * >>The input when ading pet must have two vlaues: the name and the age.
+ * >>The ID input by the user must be an index of the array.
+ * 
+ * MILESTONES
+ * Milestone 3: Save and load pet data from a text file.
+ * Milestone 4: Handle errors.
+ */
 
 import java.util.Scanner;
 import java.io.File; // Import the File class
@@ -264,17 +204,40 @@ public class PetDatabase {
                 break;
             }
 
+            // Error for attempting to add more than 5 animals to database.
+            if (petCount > 4) {
+                System.out.println("Error: Database is full.");
+                run = false;
+                break;
+            }
+
             petName = line.substring(0, line.indexOf(" "));
             petAge = line.substring(line.indexOf(" ")+1);
 
-            pet[i][j] = petName;
-            j++; // Index to next column in same row (since there's only two columns it didn't seem to make sense to use a loop.)
-            pet[i][j] = petAge;
-            
-            i++; // Index to next row
-            j--; // Reset column number for next pet
+            // Error for if pet's age isn't typed by user
+            if (petAge == null) {
+                System.out.println("Error: " + line + " is not a valid input.");
+                break;
+            }
 
-            petCount++; // Increase petCount number
+            int petAgeInt = Integer.parseInt(petAge); // This parses the string value of petAge into an int value to test its validity
+
+            // Define the success state to add values to database
+            if (petAgeInt < 20 && petAgeInt > 1) {
+                pet[i][j] = petName;
+                j++; // Index to next column in same row (since there's only two columns it didn't seem to make sense to use a loop.)
+                pet[i][j] = petAge;
+            
+                i++; // Index to next row
+                j--; // Reset column number for next pet
+
+                petCount++; // Increase petCount number
+
+            } else { //If the pet age is lower than 1 or higher than 20, an error appears.
+                System.out.println("Error: " + petAgeInt + " is not a valid age.");
+                break;
+            }
+
         }
         input.close();
     }
@@ -289,6 +252,12 @@ public class PetDatabase {
 
         System.out.print("\nEnter the pet ID you wish to update: ");
         int petID = input.nextInt();
+
+        // Error for if user types in a database ID that is invalid
+        if (petID > pet.length) {
+            System.out.println("Error: ID " + petID + " does not exist.");
+        }
+
         System.out.print("Enter new name and new age: ");
         String newName = input.nextLine();
         String newAge = input.nextLine();
@@ -308,6 +277,11 @@ public class PetDatabase {
 
         System.out.print("Enter the pet ID to remove: ");
         int id = input.nextInt();
+
+        // Error for if user types in a database ID that is invalid
+        if (id > pet.length) {
+            System.out.println("Error: ID " + id + " does not exist.");
+        }
 
         System.out.println(pet[id][0] +" " + pet[id][1] + " is removed.");
         for (int r = 0; r < petCount; r++) {
